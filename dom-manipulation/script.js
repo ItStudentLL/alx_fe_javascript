@@ -1,3 +1,5 @@
+const quotesKey = "quotes";
+const lastIndexKey = "lastViewedIndex";
 const quotes = [
   { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
   { text: "Success is not the key to happiness. Happiness is the key to success.", category: "Inspiration" },
@@ -10,27 +12,26 @@ const newQuoteBtn = document.getElementById("newQuote");
 
 function saveQuotes() {
   try {
-    localStorage.setItem("quotes", JSON.stringify(quotes));
+    localStorage.setItem(quotesKey, JSON.stringify(quotes));
   } catch (e) {}
 }
 
 function loadQuotes() {
   try {
-    const raw = localStorage.getItem("quotes");
+    const raw = localStorage.getItem(quotesKey);
     if (!raw) return;
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) {
-      const valid = parsed.filter(q => q && typeof q.text === "string" && typeof q.category === "string");
-      if (valid.length) {
-        quotes.splice(0, quotes.length, ...valid);
-      }
+    if (!Array.isArray(parsed)) return;
+    const valid = parsed.filter(q => q && typeof q.text === "string" && typeof q.category === "string");
+    if (valid.length) {
+      quotes.splice(0, quotes.length, ...valid);
     }
   } catch (e) {}
 }
 
 function showQuoteByIndex(idx) {
   if (!Array.isArray(quotes) || quotes.length === 0) {
-    quoteDisplay.textContent = "No quotes available.";
+    if (quoteDisplay) quoteDisplay.textContent = "No quotes available.";
     return;
   }
   if (typeof idx !== "number" || !Number.isFinite(idx) || idx < 0 || idx >= quotes.length) {
@@ -39,12 +40,9 @@ function showQuoteByIndex(idx) {
   const q = quotes[idx];
   const text = typeof q.text === "string" ? q.text : "";
   const category = typeof q.category === "string" ? q.category : "Uncategorized";
-  quoteDisplay.innerHTML = `
-    <p>"${text}"</p>
-    <p class="category">— ${category}</p>
-  `;
+  if (quoteDisplay) quoteDisplay.innerHTML = `<p>"${text}"</p><p class="category">— ${category}</p>`;
   try {
-    sessionStorage.setItem("lastViewedIndex", String(idx));
+    sessionStorage.setItem(lastIndexKey, String(idx));
   } catch (e) {}
 }
 
@@ -94,7 +92,7 @@ function importFromJsonFile(event) {
       alert("Quotes imported successfully!");
       showQuoteByIndex(quotes.length - valid.length);
     } catch (err) {
-      alert("Failed to import JSON: " + err.message);
+      alert("Failed to import JSON: " + (err && err.message ? err.message : "unknown error"));
     } finally {
       try { event.target.value = ""; } catch (e) {}
     }
@@ -102,7 +100,7 @@ function importFromJsonFile(event) {
   reader.readAsText(file);
 }
 
-function exportToJson() {
+function exportToJsonFile() {
   try {
     const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -151,7 +149,7 @@ function createAddQuoteForm() {
   exportBtn.type = "button";
   exportBtn.id = "exportQuotes";
   exportBtn.textContent = "Export JSON";
-  exportBtn.addEventListener("click", exportToJson);
+  exportBtn.addEventListener("click", exportToJsonFile);
   container.appendChild(inputText);
   container.appendChild(inputCategory);
   container.appendChild(submitBtn);
@@ -172,7 +170,7 @@ if (newQuoteBtn) {
 createAddQuoteForm();
 
 try {
-  const last = sessionStorage.getItem("lastViewedIndex");
+  const last = sessionStorage.getItem(lastIndexKey);
   const idx = last !== null && last !== undefined ? parseInt(last, 10) : NaN;
   if (!Number.isFinite(idx) || idx < 0 || idx >= quotes.length) {
     showRandomQuote();
