@@ -8,7 +8,7 @@ const quotes = [
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
 
-function displayRandomQuote() {
+function showRandomQuote() {
   if (!Array.isArray(quotes) || quotes.length === 0) {
     quoteDisplay.textContent = "No quotes available.";
     return;
@@ -37,7 +37,7 @@ function addQuote(e) {
   quotes.push({ text, category });
   textInput.value = "";
   categoryInput.value = "";
-  displayRandomQuote();
+  showRandomQuote();
 }
 
 function createAddQuoteForm() {
@@ -70,8 +70,8 @@ function createAddQuoteForm() {
 }
 
 if (newQuoteBtn) {
-  newQuoteBtn.addEventListener("click", displayRandomQuote);
+  newQuoteBtn.addEventListener("click", showRandomQuote);
 }
 
 createAddQuoteForm();
-displayRandomQuote();
+showRandomQuote();
