@@ -172,11 +172,7 @@ async function syncQuotes() {
     saveQuotes();
     populateCategories();
 
-    if (added + updated > 0) {
-      syncStatus.textContent = `${added} added, ${updated} updated from server.`;
-    } else {
-      syncStatus.textContent = "No updates from server.";
-    }
+    syncStatus.textContent = "Quotes synced with server!";
 
     if (conflicts.length) {
       conflictList.innerHTML = "Resolved conflicts:<br>" + conflicts.map(t => `<div>${t}</div>`).join("");
