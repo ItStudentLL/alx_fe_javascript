@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dynamic Quote Generator</title>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <div id="syncStatus" style="color: green; font-weight: bold;"></div>
+  <div id="syncStatus" aria-live="polite"></div>
+  <div id="conflictList" style="color: darkred;"></div>
 
   <div>
     <select id="categoryFilter" onchange="filterQuotes()">
@@ -19,14 +20,16 @@
   <div id="quoteDisplay"></div>
   <button id="newQuote">Show New Quote</button>
 
-  <br><br>
-  <input type="text" id="newQuoteText" placeholder="Enter new quote" />
-  <input type="text" id="newQuoteCategory" placeholder="Enter category" />
-  <button id="addQuote">Add Quote</button>
+  <div style="margin-top:16px;">
+    <input type="text" id="newQuoteText" placeholder="Enter new quote" />
+    <input type="text" id="newQuoteCategory" placeholder="Enter category" />
+    <button id="addQuote">Add Quote</button>
+  </div>
 
-  <br><br>
-  <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
-  <button id="exportQuotes" onclick="exportToJsonFile()">Export Quotes</button>
+  <div style="margin-top:12px;">
+    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+    <button id="exportQuotes" onclick="exportToJsonFile()">Export Quotes</button>
+  </div>
 
   <script src="script.js"></script>
 </body>
